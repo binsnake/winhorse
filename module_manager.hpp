@@ -10,8 +10,8 @@
 #include <vector>
 #include <print>
 
-#include <linuxpe/includes/linuxpe>
-#include <context/memory.hpp>
+#include <linuxpe>
+#include <KUBERA/memory.hpp>
 
 class ModuleManager {
 	struct Module {
@@ -97,8 +97,8 @@ public:
 			}
 		}
 		return {};
-	}	
-	
+	}
+
 	std::string get_module_name_by_address ( uint64_t address ) const {
 		for ( const auto& mod : modules ) {
 			if ( address >= mod.base && address < ( mod.base + mod.size ) ) {

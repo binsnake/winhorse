@@ -1,3 +1,6 @@
 [submodule "deps/KUBERA"]
 	path = deps/KUBERA
 	url = https://github.com/binsnake/KUBERA
+[submodule "deps/linux-pe"]
+	path = deps/linux-pe
+	url = https://github.com/can1357/linux-pe

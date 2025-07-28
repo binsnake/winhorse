@@ -1,6 +1,6 @@
 #pragma once
 
-#include <KUBERA/KUBERA.hpp>
+#include <KUBERA.hpp>
 #include <map>
 #include <string>
 #include "module_manager.hpp"

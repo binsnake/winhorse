@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <KUBERA/KUBERA.hpp>
+#include <KUBERA.hpp>
 
 #define CONTEXT_AMD64   0x00100000L
 

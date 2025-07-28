@@ -1,9 +1,7 @@
-#include <KUBERA/KUBERA.hpp>
+#include <KUBERA.hpp>
 #include <print>
 #include <sstream>
 #include <chrono>
-#pragma comment(lib, "KUBERA.lib")
-#pragma comment(lib, "platform.lib")
 #include "../wintypes.hpp"
 #include "../syscalls.hpp"
 #include "../module_manager.hpp"

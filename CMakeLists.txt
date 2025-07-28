@@ -23,11 +23,12 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/deps
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/KUBERA
-    ${CMAKE_CURRENT_SOURCE_DIR}/deps/KUBERA/deps/linux-pe
+    ${CMAKE_CURRENT_SOURCE_DIR}/deps/linux-pe/includes
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/KUBERA/deps/boost_multiprecision/include
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/KUBERA/deps/boost_config/include
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Kubera)
+target_link_libraries(${PROJECT_NAME} PRIVATE KUBERA)
 target_compile_definitions(${PROJECT_NAME} PUBLIC BOOST_MP_STANDALONE)

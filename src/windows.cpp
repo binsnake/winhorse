@@ -1,7 +1,7 @@
 #include "../wintypes.hpp"
 #define NOMINMAX
 #include <Windows.h>
-#include <KUBERA/KUBERA.hpp>
+#include <KUBERA.hpp>
 #include <ratio>
 #include <chrono>
 
