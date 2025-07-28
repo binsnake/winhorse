@@ -8,16 +8,6 @@
 #include "../process.hpp"
 using namespace kubera;
 
-typedef struct _API_SET_NAMESPACE {
-	unsigned long Version;
-	unsigned long Size;
-	unsigned long Flags;
-	unsigned long Count;
-	unsigned long EntryOffset;
-	unsigned long HashOffset;
-	unsigned long HashFactor;
-} API_SET_NAMESPACE, * PAPI_SET_NAMESPACE;
-
 void save_cpu_state ( KUBERA& ctx, windows::CONTEXT& context ) {
 	if ( ( context.ContextFlags & CONTEXT_DEBUG_REGISTERS ) == CONTEXT_DEBUG_REGISTERS ) {
 		context.Dr0 = ctx.get_reg ( Register::DR0 );
@@ -116,30 +106,40 @@ void setup_context ( KUBERA& ctx, uint64_t start_address ) {
 	ctx.set_reg ( Register::RDX, reinterpret_cast< uint64_t >( windows::ntdll ), 8 );
 }
 
-int main ( ) {
+int main ( int argc, char* argv [ ] ) {
+	if ( argc < 2 ) {
+		std::println ( "Usage: winhorse.exe target.exe" );
+		return 1;
+	}
+	std::println ( "{}", std::filesystem::current_path ( ).string() );
+	if ( !std::filesystem::exists ( "ntdll.dll" ) ) {
+		std::println ( "Error: ntdll.dll must be placed in the current directory." );
+		return 1;
+	}
+
 	using namespace process;
-	windows::emu_module = reinterpret_cast< void* >( mm.load_module ( "D:\\binsnake\\kubera\\emu.exe", 0x00007FFF50000000 ) );
-	windows::ntdll = reinterpret_cast< void* >( mm.load_module ( "C:\\Windows\\System32\\ntdll.dll", 0x00007FFFFF000000 ) );
-	//windows::win32u = reinterpret_cast< void* >( mm.load_module ( "C:\\Windows\\System32\\win32u.dll", 0x00007FFFFD000000 ) );
+	windows::emu_module = reinterpret_cast< void* >( mm.load_module ( argv [ 1 ], 0x00007FFF50000000 ) );
+	windows::ntdll = reinterpret_cast< void* >( mm.load_module ( "ntdll.dll", 0x00007FFFFF000000 ) );
+	//windows::win32u = reinterpret_cast< void* >( mm.load_module ( "win32u.dll", 0x00007FFFFD000000 ) );
 
 	windows::ldr_initialize_thunk =
-		mm.get_export_address_public ( "C:\\Windows\\System32\\ntdll.dll", "LdrInitializeThunk" );
+		mm.get_export_address_public ( "ntdll.dll", "LdrInitializeThunk" );
 
 	windows::rtl_user_thread_start =
-		mm.get_export_address_public ( "C:\\Windows\\System32\\ntdll.dll", "RtlUserThreadStart" );
+		mm.get_export_address_public ( "ntdll.dll", "RtlUserThreadStart" );
 
 	windows::ki_user_apc_dispatcher =
-		mm.get_export_address_public ( "C:\\Windows\\System32\\ntdll.dll", "KiUserApcDispatcher" );
+		mm.get_export_address_public ( "ntdll.dll", "KiUserApcDispatcher" );
 
 	windows::ki_user_exception_dispatcher =
-		mm.get_export_address_public ( "C:\\Windows\\System32\\ntdll.dll", "KiUserExceptionDispatcher" );
+		mm.get_export_address_public ( "ntdll.dll", "KiUserExceptionDispatcher" );
 
 	syscall_handlers::build_syscall_map ( ctx, mm );
 	windows::setup_fake_peb ( ctx, reinterpret_cast< uint64_t >( windows::ntdll ) );
 	windows::setup_fake_teb ( ctx );
 	windows::setup_user_shared_data ( ctx );
 
-	setup_context ( ctx, mm.get_entry_point ( "D:\\binsnake\\kubera\\emu.exe" ) );
+	setup_context ( ctx, mm.get_entry_point ( argv [ 1 ] ) );
 
 	std::println ( "ntdll base: {:#x}", ( uint64_t ) windows::ntdll );
 	auto vm = ctx.get_virtual_memory ( );

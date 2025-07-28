@@ -417,3 +417,5 @@ FodyWeavers.xsd
 *.msm
 *.msp
 /build
+dummy.exe
+ntdll.dll
