@@ -234,7 +234,7 @@ namespace windows
 			ULONG NewAccessProtection,
 			PULONG OldAccessProtection
 	) {
-		if ( ProcessHandle != CURRENT_PROCESS ) {
+		if ( ProcessHandle != CURRENT_PROCESS && ProcessHandle.bits != 0 ) {
 			std::println ( "[syscall - NtProtectVirtualMemory] Attempted on foreign process" );
 			return STATUS_NOT_SUPPORTED;
 		}
@@ -520,7 +520,7 @@ void syscall_handlers::dispatcher_verbose ( const iced::Instruction& instr, kube
 }
 
 void syscall_handlers::build_syscall_map ( kubera::KUBERA& ctx, ModuleManager& mm ) {
-	const char* mods [ ] = { "C:\\Windows\\System32\\ntdll.dll", "C:\\Windows\\System32\\win32u.dll" };
+	const char* mods [ ] = { "ntdll.dll", "win32u.dll" };
 	for ( const auto& mod : mods ) {
 		const auto* table = mm.get_exports_public ( mod );
 		if ( !table ) continue;
